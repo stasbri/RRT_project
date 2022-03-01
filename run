@@ -1,0 +1,23 @@
+#!/bin/bash
+
+name=$1
+
+if [ $name == 'build' ] || [ $name == 'b' ]; 
+	then echo $name; 
+	python3 -m pip install --upgrade pip;
+	for req in $(cat requirements.txt);
+		do 
+		echo 'Installing' $req;
+		python3 -m pip install $req;
+	done;
+fi
+
+if [ $name == 'RRT' ];
+	then
+	python3 src/RRT.py;
+fi
+
+if [ $name == 'visual' ] || [ $name == 'v' ];
+	then
+	python3 src/visual.py;
+fi
