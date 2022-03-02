@@ -6,24 +6,34 @@ white = (255, 255, 255)
 green = (0, 255, 0)
 red = (255, 0, 0)
 blue = (0, 0, 255)
+
 f = open('src/logs', 'r')
 logs = f.readlines()
 f.close()
-size = list(map(int, logs[0].split()))
+
+
+f = open('src/map_log', 'r')
+map_logs = f.readlines()
+f.close()
 
 pygame.init()
+size = list(map(int, logs[0].split()))
 screen = pygame.display.set_mode(size)
+
 print(size)
 print(logs)
 
-done = False
+for line in map_logs:
+    cor = list(map(int, line.split()))
+    pygame.draw.line(screen, red, cor[:2], cor[2:])
+pygame.display.update()
 
+done = False
 i = 3
 tree = True
-
 start = list(map(int, logs[1].split()))
 finish = list(map(int, logs[2].split()))
-pygame.draw.circle(screen, red, start, 2)
+pygame.draw.circle(screen, red, finish, 2)
 pygame.draw.circle(screen, blue, finish, 2)
 pygame.display.update()
 time.sleep(0.1)
@@ -42,12 +52,12 @@ while not done:
             print(cor)
             pygame.draw.line(screen, white, cor[:2], cor[2:])
             pygame.display.update()
-            time.sleep(0.1)
+            time.sleep(0.01)
         else:
             cor = list(map(int, logs[i].split()))
             print(cor)
             pygame.draw.line(screen, green, cor[:2], cor[2:])
             pygame.display.update()
-            time.sleep(0.01)
+            time.sleep(0.05)
     i += 1
-time.sleep(10)
+time.sleep(5)
