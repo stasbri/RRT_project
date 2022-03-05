@@ -3,7 +3,7 @@ from args import map_size, start, finish
 from maps.map_objects import make_obstacles_wall_with_hole_in_the_middle_vertical, \
     make_obstacles_wall_with_hole_in_the_middle_horizontal
 import random
-from point import Point
+from geometry import Point, Section, intersection_of_sections
 from maps import all_maps
 
 
@@ -17,18 +17,23 @@ class Map:
                                          + make_obstacles_wall_with_hole_in_the_middle_horizontal(map_size, 5)
             self.limit = 10
         else:
-            m = all_maps[source]
+            m = all_maps[source]()
             self.size: tuple = m.size
             self.start: Point = m.start
             self.finish: Point = m.finish
             self.obstacles: List[list] = m.obstacles
             self.limit = m.limit
 
-    def is_way(self, start: Point, end: Point):
+    def new_point(self, start: Point, end: Point) -> Point:
+        d = dist(start, end)
+        res_p = end
         for i in range(len(self.obstacles)):
-            if intersect(start, end, self.obstacles[i][0], self.obstacles[i][1]):
-                return False
-        return True
+            n_p: Point = intersection_of_sections(Section(start, res_p),
+                                                  Section(self.obstacles[i][0], self.obstacles[i][1]))
+            if dist(start, n_p) < d:
+                d = dist(start, n_p)
+                res_p = n_p
+        return res_p
 
     def dump(self):
         pass
@@ -51,13 +56,11 @@ class Tree:
     def find_closest_node(self, p: Point):
         d = dist(self.tree[0].point, p)
         best = 0
-        second_best = 0
         for i in range(len(self.tree)):
             if dist(self.tree[i].point, p) < d:
                 d = dist(self.tree[i].point, p)
-                second_best = best
                 best = i
-        return self.tree[best], self.tree[second_best]
+        return self.tree[best]
 
 
 # here we go with functions

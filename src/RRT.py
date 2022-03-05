@@ -1,11 +1,13 @@
 import random
-from objects import Map, Point, Tree, Node, random_point_in_range, new_point, dist
-from args import source, limit
+import time
+
+from objects import Map, Tree, Node, random_point_in_range, new_point
+from args import source
 from logger import log
 
 
 my_map = Map(source)
-
+limit = my_map.limit
 
 way_found = False
 
@@ -18,27 +20,27 @@ log(my_map.size[0], my_map.size[1])
 print('##########33logged map size')
 log(my_map.start)
 log(my_map.finish)
+t = time.time()
 while not way_found:
     new_p = random_point_in_range((0, my_map.size[0]), (0, my_map.size[1]))
-    best_node, second_best = tree.find_closest_node(new_p)
+    best_node = tree.find_closest_node(new_p)
+
     new = new_point(best_node.point, new_p, limit)
-    second_new = new_point(second_best.point, new_p, limit)
+
+    new = my_map.new_point(best_node.point, new)
+
     new_node = Node(new, best_node)
-    second_new_node = Node(new, best_node)
-    if my_map.is_way(best_node.point, new_node.point):
-        tree.add_node(new_node)
-        log(str(new_node.point), str(best_node.point))
-        if my_map.is_way(new, end_point):
-            way_found = True
-            tree.add_node(Node(end_point, new_node))
-    elif my_map.is_way(second_best.point, second_new_node.point):
-        tree.add_node(new_node)
-        log(str(new_node.point), str(best_node.point))
-        if my_map.is_way(new, end_point):
-            way_found = True
-            tree.add_node(Node(end_point, new_node))
+    tree.add_node(new_node)
+    # log(str(new_node.point), str(best_node.point))
+    if my_map.new_point(new, end_point) == end_point:
+        way_found = True
+        tree.add_node(Node(end_point, new_node))
 
 
+print('finished RRT search, time =', time.time() - t)
+for node in tree.tree:
+    if node.ans is not None:
+        log(str(node.point), str(node.ans.point))
 n = tree.tree[-1]
 path = list()
 path.append(n)

@@ -1,5 +1,6 @@
 from typing import List
-from .point import Point
+# noinspection PyUnresolvedReferences
+from geometry import Point
 
 
 def make_obstacles_wall_with_hole_in_the_middle_vertical(field_size: tuple, hole_size: int):
@@ -28,14 +29,16 @@ def make_obstacles_wall_with_hole_in_the_middle_horizontal(field_size: tuple, ho
     return [[p1, p2], [p3, p4]]
 
 
-def make_nice_square(left_cor: int, up_cor: int, side_length: int):
+def make_nice_rectangle(left_cor: int, up_cor: int, x_side_length: int, y_side_length=None):
+    if y_side_length is None:
+        y_side_length = x_side_length
     res: List[List[Point]] = []
     x = left_cor
     y = up_cor
     p1 = Point(x, y)
-    p2 = Point(x + side_length, y)
-    p3 = Point(x + side_length, y + side_length)
-    p4 = Point(x, y + side_length)
+    p2 = Point(x + x_side_length, y)
+    p3 = Point(x + x_side_length, y + y_side_length)
+    p4 = Point(x, y + y_side_length)
     res.append([p1, p2])
     res.append([p2, p3])
     res.append([p3, p4])

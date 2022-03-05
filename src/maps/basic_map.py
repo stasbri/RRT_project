@@ -1,5 +1,6 @@
 from typing import List, Tuple
-from .point import Point
+# noinspection PyUnresolvedReferences
+from geometry import Point
 import os
 
 
