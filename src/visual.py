@@ -27,7 +27,7 @@ i = 3
 tree = True
 start = list(map(int, logs[1].split()))
 finish = list(map(int, logs[2].split()))
-pygame.draw.circle(screen, red, finish, 2)
+pygame.draw.circle(screen, red, start, 2)
 pygame.draw.circle(screen, blue, finish, 2)
 pygame.display.update()
 time.sleep(0.1)
@@ -54,4 +54,4 @@ while not done:
             pygame.display.update()
             time.sleep(0.05)
     i += 1
-time.sleep(5)
+time.sleep(15)

@@ -1,16 +1,20 @@
 import time
+from typing import List
 
-from objects import Map, Tree, Node, random_point_in_range, new_point
+from objects import Map, Tree, Node, random_point_in_range, new_point, dist
 from args import source
 from logger import log
 import sys
-args = sys.argv
 
+from math import inf
+
+args = sys.argv
 if len(args) > 1:
     source = int(args[1])
 
 my_map = Map(source)
 limit = my_map.limit
+
 
 
 way_found = False
@@ -32,8 +36,20 @@ while not way_found:
     new = new_point(best_node.point, new_p, limit)
 
     new = my_map.new_point(best_node.point, new)
+    c = dist(best_node.point, new) + best_node.cost()
+    close_nodes: List[Node] = tree.close_nodes(new, limit)
+    for node in close_nodes:
+        if dist(new, node.point) + node.cost() < c:
+            if my_map.is_way(node.point, new):
+                c = dist(new, node.point) + node.cost()
+                best_node = node
 
     new_node = Node(new, best_node)
+    for node in close_nodes:
+        if dist(new, node.point) + new_node.cost() < node.cost():
+            if my_map.is_way(new, node.point):
+                node.ans = new_node
+
     tree.add_node(new_node)
     # log(str(new_node.point), str(best_node.point))
     if my_map.new_point(new, new_point(new, end_point, limit)) == end_point:
@@ -41,7 +57,7 @@ while not way_found:
         tree.add_node(Node(end_point, new_node))
 
 
-print('finished RRT search, time =', time.time() - t)
+print('finished RRT* search, time =', time.time() - t)
 for node in tree.tree:
     if node.ans is not None:
         log(str(node.point), str(node.ans.point))

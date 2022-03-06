@@ -14,10 +14,17 @@ fi
 
 if [ $name == 'RRT' ];
 	then
-	python3 src/RRT.py;
+	python3 src/RRT.py $2;
 fi
 
 if [ $name == 'visual' ] || [ $name == 'v' ];
 	then
 	python3 src/visual.py;
 fi
+
+
+if [ $name == 'RRT*' ];
+        then
+        python3 src/RRTstar.py $2;
+fi
+

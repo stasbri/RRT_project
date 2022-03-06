@@ -35,6 +35,12 @@ class Map:
                 res_p = n_p
         return res_p
 
+    def is_way(self, start: Point, end: Point):
+        for i in range(len(self.obstacles)):
+            if intersect(start, end, self.obstacles[i][0], self.obstacles[i][1]):
+                return False
+        return True
+
     def dump(self):
         pass
 
@@ -44,11 +50,16 @@ class Node:
         self.point = p
         self.ans: Node = ans
 
+    def cost(self):
+        if self.ans is None:
+            return 0
+        return dist(self.point, self.ans.point) + self.ans.cost()
+
 
 class Tree:
     def __init__(self, p: Node):
-        self.root = p
-        self.tree = [p]
+        self.root: Node = p
+        self.tree: List[Node] = [p]
 
     def add_node(self, n: Node):
         self.tree.append(n)
@@ -61,6 +72,13 @@ class Tree:
                 d = dist(self.tree[i].point, p)
                 best = i
         return self.tree[best]
+
+    def close_nodes(self, p: Point, limit) -> List[Node]:
+        res = []
+        for node in self.tree:
+            if dist(node.point, p) <= limit:
+                res.append(node)
+        return res
 
 
 # here we go with functions
@@ -75,7 +93,7 @@ def dist(p1: Point, p2: Point):
     return ((p1.x - p2.x) ** 2 + (p1.y - p2.y) ** 2) ** 0.5
 
 
-def new_point(start: Point, end: Point, limit: float):
+def new_point(start: Point, end: Point, limit: float) -> Point:
     d = dist(start, end)
     if d < limit:
         return end
