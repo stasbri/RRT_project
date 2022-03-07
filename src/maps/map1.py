@@ -15,6 +15,6 @@ def first_map():
     resulting_map + make_obstacles_wall_with_hole_in_the_middle_vertical(resulting_map.size, 15)
     resulting_map + make_nice_rectangle(1500, 800, 200)
     resulting_map + make_nice_rectangle(1600, 550, 200)
-    resulting_map.limit = 50
+    resulting_map.limit = 30
     resulting_map.log('src/map_log')
     return resulting_map

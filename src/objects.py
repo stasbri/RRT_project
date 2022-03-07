@@ -41,6 +41,16 @@ class Map:
                 return False
         return True
 
+    def random_point_in_range(self):
+        r = random.randint(1, 10)
+        if r:
+            x = random.uniform(0, self.size[0])
+            y = random.uniform(0, self.size[1])
+        else:
+            x = random.uniform(max(0, self.finish.x - self.limit), min(self.size[0], self.finish.x + self.limit))
+            y = random.uniform(max(0, self.finish.y - self.limit), min(self.size[1], self.finish.y + self.limit))
+        return Point(x, y)
+
     def dump(self):
         pass
 
@@ -83,10 +93,6 @@ class Tree:
 
 # here we go with functions
 
-def random_point_in_range(x_range: tuple, y_range: tuple):
-    x = random.uniform(x_range[0], x_range[1])
-    y = random.uniform(y_range[0], y_range[1])
-    return Point(x, y)
 
 
 def dist(p1: Point, p2: Point):

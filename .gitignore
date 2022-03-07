@@ -1,4 +1,4 @@
-src/logs
+src/logs.json
 *__pycache__
 src/map_log
 .idea
