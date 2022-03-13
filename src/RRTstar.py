@@ -10,7 +10,7 @@ from math import inf
 
 args = sys.argv
 if len(args) > 1:
-    source = int(args[1])
+    source = args[1]
 
 my_map = Map(source)
 limit = my_map.limit
@@ -25,7 +25,7 @@ end_point = my_map.finish
 
 logger = logger('src/logs.json')
 
-tree = Tree(root)
+tree = Tree(root, my_map.limit, my_map.size)
 logger.read_size(my_map.size[0], my_map.size[1])
 logger.read_start(my_map.start.x, my_map.start.y)
 logger.read_finish(my_map.finish.x, my_map.finish.y)
@@ -38,7 +38,7 @@ while not way_found:
 
     new = my_map.new_point(best_node.point, new)
     c = dist(best_node.point, new) + best_node.cost()
-    close_nodes: List[Node] = tree.close_nodes(new, limit)
+    close_nodes: List[Node] = tree.close_nodes(new)
     for node in close_nodes:
         if dist(new, node.point) + node.cost() < c:
             if my_map.is_way(node.point, new):
@@ -59,12 +59,13 @@ while not way_found:
     logger.read_new_vert(*(best_node.point.as_nums() + new_node.point.as_nums()))
     if my_map.new_point(new, new_point(new, end_point, limit)) == end_point:
         way_found = True
-        tree.add_node(Node(end_point, new_node))
+        n = Node(end_point, new_node)
+        tree.add_node(n)
 
 
 print('finished RRT* search, time =', time.time() - t)
 
-n = tree.tree[-1]
+
 print(n.cost())
 path = list()
 path.append(n)

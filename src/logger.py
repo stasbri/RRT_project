@@ -1,4 +1,22 @@
 import json
+import os
+
+
+class testing_logger:
+    def __init__(self, file_name: str = 'otladka'):
+        self.file = file_name
+        os.system(f'rm {file_name}')
+        self.do = False
+
+    def on(self):
+        self.do = True
+
+    def off(self):
+        self.do = False
+
+    def log(self, string: str):
+        if self.do:
+            os.system(f'echo {string} >> {self.file}')
 
 
 class logger:

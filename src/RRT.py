@@ -7,7 +7,7 @@ import sys
 args = sys.argv
 
 if len(args) > 1:
-    source = int(args[1])
+    source = args[1]
 
 my_map = Map(source)
 limit = my_map.limit
@@ -21,7 +21,7 @@ end_point = my_map.finish
 
 logger = logger('src/logs.json')
 
-tree = Tree(root)
+tree = Tree(root, my_map.limit, my_map.size)
 logger.read_size(my_map.size[0], my_map.size[1])
 logger.read_start(my_map.start.x, my_map.start.y)
 logger.read_finish(my_map.finish.x, my_map.finish.y)
@@ -40,12 +40,13 @@ while not way_found:
     logger.read_new_vert(* (new_node.point.as_nums() + best_node.point.as_nums()))
     if my_map.new_point(new, new_point(new, end_point, limit)) == end_point:
         way_found = True
-        tree.add_node(Node(end_point, new_node))
+        final_node = Node(end_point, new_node)
+        tree.add_node(final_node)
 
 
 print('finished RRT search, time =', time.time() - t)
 
-n = tree.tree[-1]
+n = final_node
 print(n.cost())
 path = list()
 path.append(n)

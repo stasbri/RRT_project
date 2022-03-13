@@ -8,26 +8,30 @@ logs = f.read()
 f.close()
 logs = json.loads(logs)
 
-f = open('src/map_log', 'r')
-map_logs = f.readlines()
+f = open('new_map.json', 'r')
+map_logs = json.loads(f.read())
 f.close()
 
 pygame.init()
-size = logs['size']
+size = map_logs['size']
 screen = pygame.display.set_mode(size)
 
 print(size)
 print(logs)
 
-for line in map_logs:
-    cor = list(map(int, line.split()))
-    pygame.draw.line(screen, red, cor[:2], cor[2:])
+for obstacle in map_logs['obstacles']:
+    if len(obstacle) > 1:
+        pygame.draw.line(screen, red, obstacle[-1], obstacle[0])
+        for i in range(len(obstacle) - 1):
+            pygame.draw.line(screen, red, obstacle[i], obstacle[i + 1])
+    else:
+        pygame.draw.circle(screen, red, obstacle[0])
 pygame.display.update()
 
 done = False
 tree = True
-start = logs['start']
-finish = logs['finish']
+start = map_logs['start']
+finish = map_logs['finish']
 pygame.draw.circle(screen, red, start, 2)
 pygame.draw.circle(screen, blue, finish, 2)
 pygame.display.update()

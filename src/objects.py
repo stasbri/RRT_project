@@ -1,10 +1,15 @@
-from typing import List
+import json
+import math
+from typing import List, Optional, Union
 from args import map_size, start, finish
 from maps.map_objects import make_obstacles_wall_with_hole_in_the_middle_vertical, \
     make_obstacles_wall_with_hole_in_the_middle_horizontal
 import random
-from geometry import Point, Section, intersection_of_sections
+from geometry import Point, Section, intersection_of_sections, Obstacle
 from maps import all_maps
+from logger import testing_logger
+
+tl = testing_logger()
 
 
 class Map:
@@ -17,28 +22,40 @@ class Map:
                                          + make_obstacles_wall_with_hole_in_the_middle_horizontal(map_size, 5)
             self.limit = 10
         else:
-            m = all_maps[source]()
-            self.size: tuple = m.size
-            self.start: Point = m.start
-            self.finish: Point = m.finish
-            self.obstacles: List[list] = m.obstacles
-            self.limit = m.limit
+            f = open(source, 'r')
+            m: dict = json.loads(f.read())
+            f.close()
+
+            self.size: Union[tuple, list] = m['size']
+            self.start: Point = Point(*m['start'])
+            self.finish: Point = Point(*m['finish'])
+            obstacles = list(map(lambda x: Obstacle(list(map(lambda y: Point(*y), x))), m['obstacles']))
+            self.obstacles: List[Obstacle] = obstacles
+            self.limit = int(m['limit'])
 
     def new_point(self, start: Point, end: Point) -> Point:
         d = dist(start, end)
         res_p = end
-        for i in range(len(self.obstacles)):
-            n_p: Point = intersection_of_sections(Section(start, res_p),
-                                                  Section(self.obstacles[i][0], self.obstacles[i][1]))
-            if dist(start, n_p) < d:
-                d = dist(start, n_p)
-                res_p = n_p
+        s = Section(start, res_p)
+        for obstacle in self.obstacles:
+            tl.log(f'Section : {str(s.start)}, {str(s.end)}')
+            tl.log(f'{str(obstacle.max_x)},{str(obstacle.min_x)},{str(obstacle.max_y)},{str(obstacle.min_y)}')
+            tl.log(str(obstacle.section_in_checkbox(s)))
+            if obstacle.section_in_checkbox(s):
+                for section in obstacle.sections:
+                    n_p: Point = intersection_of_sections(s, section)
+                    if dist(start, n_p) < d:
+                        d = dist(start, n_p)
+                        res_p = n_p
+                        s = Section(start, res_p)
         return res_p
 
     def is_way(self, start: Point, end: Point):
-        for i in range(len(self.obstacles)):
-            if intersect(start, end, self.obstacles[i][0], self.obstacles[i][1]):
-                return False
+        for obstacle in self.obstacles:
+            if obstacle.section_in_checkbox(Section(start, end)):
+                for section in obstacle.sections:
+                    if intersect(start, end, section.start, section.end):
+                        return False
         return True
 
     def random_point_in_range(self):
@@ -67,32 +84,45 @@ class Node:
 
 
 class Tree:
-    def __init__(self, p: Node):
+    def __init__(self, p: Node, limit: int, size: Union[list, tuple]):
+
+        self.size: Optional[list, tuple] = size
         self.root: Node = p
-        self.tree: List[Node] = [p]
+        self.tree: List[List[List[Node]]] = list()
+        self.limit = limit
+        for i in range(int(size[0] // limit) + 1):
+            self.tree.append(list())
+            for j in range(int(size[1] // limit) + 1):
+                self.tree[i].append(list())
 
     def add_node(self, n: Node):
-        self.tree.append(n)
+        self.tree[int(n.point.x // self.limit)][int(n.point.y // self.limit)].append(n)
 
     def find_closest_node(self, p: Point):
-        d = dist(self.tree[0].point, p)
-        best = 0
+        d = dist(self.root.point, p)
+        best = self.root
         for i in range(len(self.tree)):
-            if dist(self.tree[i].point, p) < d:
-                d = dist(self.tree[i].point, p)
-                best = i
-        return self.tree[best]
+            for j in range(len(self.tree[i])):
+                for n in self.tree[i][j]:
+                    n: Node
+                    if dist(n.point, p) < d:
+                        d = dist(n.point, p)
+                        best = n
+        return best
 
-    def close_nodes(self, p: Point, limit) -> List[Node]:
+    def close_nodes(self, p: Point) -> List[Node]:
+        x = p.x // self.limit
+        y = p.y // self.limit
         res = []
-        for node in self.tree:
-            if dist(node.point, p) <= limit:
-                res.append(node)
+        for i in range(int(max(0, x - 1)), int(min(self.size[0], x + 1))):
+            for j in range(int(max(0, y - 1)), int(min(self.size[1], y + 1))):
+                for n in self.tree[i][j]:
+                    if dist(p, n.point) <= self.limit:
+                        res.append(n)
         return res
 
 
 # here we go with functions
-
 
 
 def dist(p1: Point, p2: Point):
@@ -108,11 +138,7 @@ def new_point(start: Point, end: Point, limit: float) -> Point:
     return Point(x, y)
 
 
-def dist(p1: Point, p2: Point):
-    return ((p1.x - p2.x) ** 2 + (p1.y - p2.y) ** 2) ** 0.5
-
-
-def ccw(A, B, C):
+def ccw(A, B, C) -> Optional[bool]:
     if (C.y - A.y) * (B.x - A.x) > (B.y - A.y) * (C.x - A.x):
         return True
     elif (C.y - A.y) * (B.x - A.x) < (B.y - A.y) * (C.x - A.x):

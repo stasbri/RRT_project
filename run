@@ -28,3 +28,7 @@ if [ $name == 'RRT*' ];
         python3 src/RRTstar.py $2;
 fi
 
+if [ $name == 'n' ] || [ $name == 'new_map' ];
+	then
+	python3 making_new_map.py $2;
+fi
