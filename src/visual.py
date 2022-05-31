@@ -72,9 +72,13 @@ while not done:
             if logs['verts'][i][0] == '+':
                 cor = logs['verts'][i][1:]
                 print(cor)
-                pygame.draw.line(screen, white, cor[:2], cor[2:])
+                pygame.draw.line(screen, green, cor[:2], cor[2:])
+                if i > 0:
+                    cor = logs['verts'][i - 1][1:]
+                    pygame.draw.line(screen, white, cor[:2], cor[2:])
                 pygame.display.update()
                 time.sleep(var)
+
             else:
                 cor = logs['verts'][i][1:]
                 print(cor)
