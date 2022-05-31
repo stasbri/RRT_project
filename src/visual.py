@@ -41,12 +41,14 @@ finish = map_logs['finish']
 pygame.draw.circle(screen, red, start, 2)
 pygame.draw.circle(screen, blue, finish, 2)
 pygame.display.update()
-var = 0
+var = 0.01
 stop = False
 Next = False
 time.sleep(0)
 i = 0
 j = 0
+first_coor_to_delete = []
+second_coor_to_delete = []
 while not done:
     if i + j >= len(logs['verts']) + len(logs['path']) - 3:
         done = True
@@ -66,16 +68,20 @@ while not done:
         time.sleep(0.1)
         stop = False
         Next = True
+
     if not stop:
         if i < len(logs['verts']) - 1:
             print('tree')
             if logs['verts'][i][0] == '+':
                 cor = logs['verts'][i][1:]
                 print(cor)
+                print(f'firstcoor{first_coor_to_delete}')
+                if first_coor_to_delete:
+                    print('deleting')
+                    pygame.draw.line(screen, white, first_coor_to_delete, second_coor_to_delete)
                 pygame.draw.line(screen, green, cor[:2], cor[2:])
-                if i > 0:
-                    cor = logs['verts'][i - 1][1:]
-                    pygame.draw.line(screen, white, cor[:2], cor[2:])
+                first_coor_to_delete = cor[:2]
+                second_coor_to_delete = cor[2:]
                 pygame.display.update()
                 time.sleep(var)
 
@@ -83,6 +89,9 @@ while not done:
                 cor = logs['verts'][i][1:]
                 print(cor)
                 pygame.draw.line(screen, black, cor[:2], cor[2:])
+                if cor[:2] == first_coor_to_delete and cor[2:] == second_coor_to_delete:
+                    first_coor_to_delete = []
+                    second_coor_to_delete = []
                 pygame.display.update()
                 time.sleep(var)
             i += 1
