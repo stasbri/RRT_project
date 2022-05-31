@@ -43,6 +43,7 @@ pygame.draw.circle(screen, blue, finish, 2)
 pygame.display.update()
 var = 0
 stop = False
+Next = False
 time.sleep(0)
 i = 0
 j = 0
@@ -55,10 +56,16 @@ while not done:
     keys = pygame.key.get_pressed()
     if keys[pygame.K_SPACE]:
         var = 2
+    if Next:
+        stop = True
+        Next = False
     if keys[pygame.K_p]:
         time.sleep(0.1)
         stop = (stop + 1) % 2
-
+    if keys[pygame.K_n]:
+        time.sleep(0.1)
+        stop = False
+        Next = True
     if not stop:
         if i < len(logs['verts']) - 1:
             print('tree')
