@@ -37,3 +37,8 @@ if [ $name == 'draw_map' ] || [ $name == 'd' ];
 	then
 	python3 src/maps_making/drawing_map.py;
 fi
+
+if [ $name == 'help' ] || [ $name == 'h' ];
+	then
+	cat README.MD;
+fi

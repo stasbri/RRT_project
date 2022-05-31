@@ -41,6 +41,7 @@ finish = map_logs['finish']
 pygame.draw.circle(screen, red, start, 2)
 pygame.draw.circle(screen, blue, finish, 2)
 pygame.display.update()
+var = 0
 time.sleep(0)
 i = 0
 j = 0
@@ -50,6 +51,9 @@ while not done:
     for event in pygame.event.get():
         if event.type == pygame.QUIT:
             done = True
+    keys = pygame.key.get_pressed()
+    if keys[pygame.K_SPACE]:
+        var = var + 2
     # print(len(logs[i]), i, len(logs))
     if i < len(logs['verts']) - 1:
         print('tree')
@@ -58,13 +62,13 @@ while not done:
             print(cor)
             pygame.draw.line(screen, white, cor[:2], cor[2:])
             pygame.display.update()
-            time.sleep(0)
+            time.sleep(var)
         else:
             cor = logs['verts'][i][1:]
             print(cor)
             pygame.draw.line(screen, black, cor[:2], cor[2:])
             pygame.display.update()
-            time.sleep(0)
+            time.sleep(var)
         i += 1
     else:
         print('path')
@@ -74,6 +78,7 @@ while not done:
         pygame.display.update()
         time.sleep(0.01)
         j += 1
+    var = 0
 
 time.sleep(15)
 pygame.quit()
