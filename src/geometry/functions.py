@@ -73,13 +73,13 @@ def intersection_of_sections(s1: Section, s2: Section) -> Point:
     if point_on_section(int_p, s1) and point_on_section(int_p, s2):
         l = normal_to_line(int_p, s2.line)
         if l.b == 0:
-            y1 = int_p.y + 1
-            y2 = int_p.y - 1
+            y1 = int_p.y + understep
+            y2 = int_p.y - understep
             x1 = -(l.c + l.b * y1) / l.a
             x2 = -(l.c + l.b * y2) / l.a
         else:
-            x1 = int_p.x + 1
-            x2 = int_p.x - 1
+            x1 = int_p.x + understep
+            x2 = int_p.x - understep
             y1 = -(l.c + l.a * x1) / l.b
             y2 = -(l.c + l.a * x2) / l.b
 

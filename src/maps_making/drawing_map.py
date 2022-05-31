@@ -86,8 +86,10 @@ while not done:
         y_1 += 1
     if keys[pygame.K_x]:
         drawer.finish_obstacle()
+        time.sleep(0.2)
     if keys[pygame.K_SPACE]:
         drawer.remember()
+        time.sleep(0.2)
     if keys[pygame.K_ESCAPE]:
         res = drawer.finish()
         done = True
