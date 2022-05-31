@@ -32,3 +32,8 @@ if [ $name == 'n' ] || [ $name == 'new_map' ];
 	then
 	python3 making_new_map.py $2;
 fi
+
+if [ $name == 'draw_map' ] || [ $name == 'd' ];
+	then
+	python3 src/maps_making/drawing_map.py;
+fi

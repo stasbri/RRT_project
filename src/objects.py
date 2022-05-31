@@ -13,25 +13,18 @@ tl = testing_logger()
 
 
 class Map:
-    def __init__(self, source):
-        if source is None:
-            self.size: tuple = map_size
-            self.start: Point = start
-            self.finish: Point = finish
-            self.obstacles: List[list] = make_obstacles_wall_with_hole_in_the_middle_vertical(map_size, 5) \
-                                         + make_obstacles_wall_with_hole_in_the_middle_horizontal(map_size, 5)
-            self.limit = 10
-        else:
-            f = open(source, 'r')
-            m: dict = json.loads(f.read())
-            f.close()
+    def __init__(self, source=None):
+        self.map = source or 'new_map.json'
+        f = open(self.map, 'r')
+        m: dict = json.loads(f.read())
+        f.close()
 
-            self.size: Union[tuple, list] = m['size']
-            self.start: Point = Point(*m['start'])
-            self.finish: Point = Point(*m['finish'])
-            obstacles = list(map(lambda x: Obstacle(list(map(lambda y: Point(*y), x))), m['obstacles']))
-            self.obstacles: List[Obstacle] = obstacles
-            self.limit = int(m['limit'])
+        self.size: Union[tuple, list] = m['size']
+        self.start: Point = Point(*m['start'])
+        self.finish: Point = Point(*m['finish'])
+        obstacles = list(map(lambda x: Obstacle(list(map(lambda y: Point(*y), x))), m['obstacles']))
+        self.obstacles: List[Obstacle] = obstacles
+        self.limit = int(m['limit'])
 
     def new_point(self, start: Point, end: Point) -> Point:
         d = dist(start, end)

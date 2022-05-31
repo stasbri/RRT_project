@@ -26,11 +26,14 @@ end_point = my_map.finish
 logger = logger('src/logs.json')
 
 tree = Tree(root, my_map.limit, my_map.size)
+logger.read_map(my_map.map)
 logger.read_size(my_map.size[0], my_map.size[1])
 logger.read_start(my_map.start.x, my_map.start.y)
 logger.read_finish(my_map.finish.x, my_map.finish.y)
 t = time.time()
-while not way_found:
+i = 0
+while i < 5000:  # not way_found:
+    i += 1
     new_p = my_map.random_point_in_range()
     best_node = tree.find_closest_node(new_p)
 
@@ -70,7 +73,7 @@ print(n.cost())
 path = list()
 path.append(n)
 
-while n.ans is not None:
+while False:  # n.ans is not None:
     logger.read_path_vert(* (n.point.as_nums() + n.ans.point.as_nums()))
     n = n.ans
     path.append(n)

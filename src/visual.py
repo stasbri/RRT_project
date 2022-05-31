@@ -7,26 +7,32 @@ f = open('src/logs.json', 'r')
 logs = f.read()
 f.close()
 logs = json.loads(logs)
+print(logs)
+source = logs['map']
 
-f = open('new_map.json', 'r')
+f = open(source, 'r')
 map_logs = json.loads(f.read())
 f.close()
+print('/n' * 3)
+print(map_logs)
+
 
 pygame.init()
 size = map_logs['size']
 screen = pygame.display.set_mode(size)
 
-print(size)
-print(logs)
 
+screen.fill(color=black)
 for obstacle in map_logs['obstacles']:
     if len(obstacle) > 1:
         pygame.draw.line(screen, red, obstacle[-1], obstacle[0])
         for i in range(len(obstacle) - 1):
             pygame.draw.line(screen, red, obstacle[i], obstacle[i + 1])
+            print(obstacle[i])
     else:
-        pygame.draw.circle(screen, red, obstacle[0])
+        pygame.draw.circle(screen, red, obstacle[0], 0)
 pygame.display.update()
+
 
 done = False
 tree = True
@@ -35,7 +41,7 @@ finish = map_logs['finish']
 pygame.draw.circle(screen, red, start, 2)
 pygame.draw.circle(screen, blue, finish, 2)
 pygame.display.update()
-time.sleep(0.1)
+time.sleep(0)
 i = 0
 j = 0
 while not done:
@@ -52,7 +58,7 @@ while not done:
             print(cor)
             pygame.draw.line(screen, white, cor[:2], cor[2:])
             pygame.display.update()
-            time.sleep(0.01)
+            time.sleep(0)
         else:
             cor = logs['verts'][i][1:]
             print(cor)
@@ -70,3 +76,4 @@ while not done:
         j += 1
 
 time.sleep(15)
+pygame.quit()

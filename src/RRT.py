@@ -4,6 +4,8 @@ from objects import Map, Tree, Node, new_point
 from args import source
 from logger import logger
 import sys
+
+
 args = sys.argv
 
 if len(args) > 1:
@@ -20,12 +22,11 @@ root = Node(root_point, None)
 end_point = my_map.finish
 
 logger = logger('src/logs.json')
-
+logger.read_map(my_map.map)
 tree = Tree(root, my_map.limit, my_map.size)
 logger.read_size(my_map.size[0], my_map.size[1])
 logger.read_start(my_map.start.x, my_map.start.y)
 logger.read_finish(my_map.finish.x, my_map.finish.y)
-print('##########33logged map size')
 t = time.time()
 while not way_found:
     new_p = my_map.random_point_in_range()

@@ -29,6 +29,9 @@ class logger:
     def read_size(self, x, y):
         self.logs['size'] = [x, y]
 
+    def read_map(self, name: str):
+        self.logs['map'] = name
+
     def read_start(self, x, y):
         self.logs['start'] = [x, y]
 
