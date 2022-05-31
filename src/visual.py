@@ -42,6 +42,7 @@ pygame.draw.circle(screen, red, start, 2)
 pygame.draw.circle(screen, blue, finish, 2)
 pygame.display.update()
 var = 0
+stop = False
 time.sleep(0)
 i = 0
 j = 0
@@ -53,32 +54,36 @@ while not done:
             done = True
     keys = pygame.key.get_pressed()
     if keys[pygame.K_SPACE]:
-        var = var + 2
-    # print(len(logs[i]), i, len(logs))
-    if i < len(logs['verts']) - 1:
-        print('tree')
-        if logs['verts'][i][0] == '+':
-            cor = logs['verts'][i][1:]
-            print(cor)
-            pygame.draw.line(screen, white, cor[:2], cor[2:])
-            pygame.display.update()
-            time.sleep(var)
+        var = 2
+    if keys[pygame.K_p]:
+        time.sleep(0.1)
+        stop = (stop + 1) % 2
+
+    if not stop:
+        if i < len(logs['verts']) - 1:
+            print('tree')
+            if logs['verts'][i][0] == '+':
+                cor = logs['verts'][i][1:]
+                print(cor)
+                pygame.draw.line(screen, white, cor[:2], cor[2:])
+                pygame.display.update()
+                time.sleep(var)
+            else:
+                cor = logs['verts'][i][1:]
+                print(cor)
+                pygame.draw.line(screen, black, cor[:2], cor[2:])
+                pygame.display.update()
+                time.sleep(var)
+            i += 1
         else:
-            cor = logs['verts'][i][1:]
+            print('path')
+            cor = logs['path'][j]
             print(cor)
-            pygame.draw.line(screen, black, cor[:2], cor[2:])
+            pygame.draw.line(screen, green, cor[:2], cor[2:])
             pygame.display.update()
-            time.sleep(var)
-        i += 1
-    else:
-        print('path')
-        cor = logs['path'][j]
-        print(cor)
-        pygame.draw.line(screen, green, cor[:2], cor[2:])
-        pygame.display.update()
-        time.sleep(0.01)
-        j += 1
-    var = 0
+            time.sleep(0.01)
+            j += 1
+        var = 0
 
 time.sleep(15)
 pygame.quit()
